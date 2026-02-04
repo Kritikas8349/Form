@@ -137,15 +137,26 @@
   .submit-btn:hover {
     transform: translateY(-2px);
   }
+
+  .submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
   
   /* MOBILE */
   @media (max-width: 480px) {
     .row {
-      flex-direction: column;
-    }
-  
-    .field.small {
-      max-width: 100%;
-    }
+        flex-direction: row;   /* column ❌ nahi */
+      }
+    
+      .field.small {
+        flex: 0 0 35%;
+        max-width: 35%;
+      }
+    
+      .row .field:not(.small) {
+        flex: 1;
+      }
   }
   

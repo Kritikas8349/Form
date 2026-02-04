@@ -2,20 +2,24 @@ import React, { useState } from "react";
 import "./ForexSeminarForm.css";
 
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzcxbbjMQawEQ9iuXg-1_Fq-6r81HHq6SkGfx9MFhSD-m3xY1nxiLBYSLdxuja5bmEyrg/exec";
+  "https://script.google.com/macros/s/AKfycbwqrc53xYqWeCWafompWzF5Xcz6f-D0MDYFBtLFjpU2MR2veW2tpKV6BDF71p1NlY47Hg/exec";
 
 const ForexSeminarForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     countryCode: "",
     phone: "",
     segments: [],
     investment: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleCheckbox = (e) => {
@@ -30,6 +34,7 @@ const ForexSeminarForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const response = await fetch(SCRIPT_URL, {
@@ -43,26 +48,29 @@ const ForexSeminarForm = () => {
       const result = await response.json();
 
       if (result.status === "success") {
-        alert("Successfully submitted!");
+        alert("✅ Form submitted successfully!");
+
         setFormData({
-          firstName: "",
-          lastName: "",
+          name: "",
           countryCode: "",
           phone: "",
           segments: [],
           investment: "",
         });
       } else {
-        alert("⚠️ Submission failed, try again.");
+        alert("⚠️ Submission failed");
       }
-    } catch (err) {
-      alert("⚠️ Error submitting form.");
+    } catch (error) {
+      alert("❌ Error submitting form");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="page-wrapper">
       <div className="form-card">
+
         <div className="logo-box">
           <img src="/logo.jpeg" alt="The Trading Tribe" />
         </div>
@@ -78,20 +86,11 @@ const ForexSeminarForm = () => {
 
           <div className="row">
             <div className="field">
-              <label>First Name *</label>
+              <label>Name *</label>
               <input
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="field">
-              <label>Last Name *</label>
-              <input
-                name="lastName"
-                value={formData.lastName}
+                type="text"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
                 required
               />
@@ -102,6 +101,7 @@ const ForexSeminarForm = () => {
             <div className="field small">
               <label>Country Code *</label>
               <input
+                type="text"
                 name="countryCode"
                 value={formData.countryCode}
                 onChange={handleChange}
@@ -112,6 +112,7 @@ const ForexSeminarForm = () => {
             <div className="field">
               <label>WhatsApp Number *</label>
               <input
+                type="text"
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
@@ -129,8 +130,7 @@ const ForexSeminarForm = () => {
                   value="Gold"
                   checked={formData.segments.includes("Gold")}
                   onChange={handleCheckbox}
-                />{" "}
-                Gold
+                /> Gold
               </label>
 
               <label>
@@ -139,8 +139,7 @@ const ForexSeminarForm = () => {
                   value="Forex"
                   checked={formData.segments.includes("Forex")}
                   onChange={handleCheckbox}
-                />{" "}
-                Forex
+                /> Forex
               </label>
 
               <label>
@@ -149,8 +148,7 @@ const ForexSeminarForm = () => {
                   value="Crypto"
                   checked={formData.segments.includes("Crypto")}
                   onChange={handleCheckbox}
-                />{" "}
-                Crypto
+                /> Crypto
               </label>
             </div>
           </div>
@@ -170,10 +168,15 @@ const ForexSeminarForm = () => {
             </select>
           </div>
 
-          <button type="submit" className="submit-btn">
-            Submit
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Sending..." : "Submit"}
           </button>
         </form>
+
       </div>
     </div>
   );
