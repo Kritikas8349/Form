@@ -43,7 +43,7 @@ const ForexSeminarForm = () => {
       const result = await response.json();
 
       if (result.status === "success") {
-        alert("✅ Your lead has been submitted!");
+        alert("Successfully submitted!");
         setFormData({
           firstName: "",
           lastName: "",
